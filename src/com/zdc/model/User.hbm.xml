@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="com.zdc.model.User" table="User">
+        <id name="id" column="Id">
+            <generator class="native"/>
+        </id>
+        
+		<property name="name" column="Name" type="java.lang.String" length="20" not-null="false"></property>
+    	<property name="password" column="Password" type="java.lang.String" length="20" not-null="false"></property>
+    	<property name="authority" column="Authority"
+    		type="java.lang.String" insert="true" length="10" not-null="false">
+    	</property>
+    </class>
+    
+</hibernate-mapping>
