@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<display-name>Information Release System</display-name>
+
+	<welcome-file-list>
+		<welcome-file>infoReleaseSystem.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- ContextLoaderListener的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。 因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，就会默认执行它实现的方法。 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 用来声明应用范围(整个WEB项目)内的上下文初始化参数。 容器对于web.xml的加载过程是context-param >> listener 
+		>> fileter >> servlet -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<!-- <param-value>/WEB-INF/applicationContext-*.xml,classpath*:applicationContext-*.xml</param-value> -->
+		<param-value>classpath:bean.xml</param-value>
+	</context-param>
+
+<!-- 
+	<filter>
+		<filter-name>OpenSessionInView</filter-name>
+		<filter-class>org.springframework.orm.hibernate5.support.OpenSessionInViewFilter</filter-class>
+		<init-param>
+			<param-name>flushMode</param-name>
+			<param-value>AUTO</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>OpenSessionInView</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+ -->
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+</web-app>
