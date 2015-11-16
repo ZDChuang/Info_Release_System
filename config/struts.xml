@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+
+<struts>
+
+	<!-- 设置编码方式，对中文乱码有很大用 -->
+	<constant name="struts.i18n.encoding" value="GBK"></constant>
+	<!-- 打开动态方法调用 -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<!-- 设置成开发模式 -->
+	<constant name="struts.devMode" value="true" />
+
+	<package name="User" extends="struts-default">
+
+		<action name="userRegister" class="com.zdc.action.UserRegisterAction">
+			<result name="success">/registerSuccess.jsp</result>
+			<result name="fail">/registerFail.jsp</result>
+			<result name="load">/user.jsp</result>
+		</action>
+
+		<action name="userLogin" class="com.zdc.action.UserLoginAction">
+			<result name="success">/userLoginSuccess.jsp</result>
+			<result name="fail">/userLoginFail.jsp</result>
+		</action>
+	</package>
+
+	<package name="Admin" extends="struts-default">
+
+		<action name="adminLogin" class="com.zdc.action.AdminLoginAction">
+			<result name="success">/adminLoginSuccess.jsp</result>
+			<result name="fail">/adminLoginFail.jsp</result>
+			<result name="list">/userList.jsp</result>
+			<result name="delete">/userDelete.jsp</result>
+			<result name="change">/userChange.jsp</result>
+			<result name="create">/userCreate.jsp</result>
+		</action>
+
+		<!-- <action name="list" class="com.zdc.action.AdminLoginAction"
+			method="list">
+			<result name="list">/userList.jsp</result>
+		</action>
+
+		<action name="delete" class="com.zdc.action.AdminLoginAction"
+			method="delete">
+			<result name="delete">/userDelete.jsp</result>
+		</action> -->
+	</package>
+
+	<package name="News" namespace="/news" extends="struts-default">
+		<action name="newsSubmit" class="com.zdc.action.NewsAction">
+			<result name="success">/news/newsSuccess.jsp</result>
+			<result name="fail">/news/newsFail.jsp</result>
+		</action>
+		
+		<action name="index" class="com.zdc.action.IndexAction">
+			<result name="success">/news/index.jsp</result>
+			<result name="fail">/news/newsFail.jsp</result>
+		</action>
+		
+		<action name="deleteNews" class="com.zdc.action.IndexAction">
+			<result name="success">/news/adminIndex.jsp</result>
+			<result name="delete">/news/deleteSuccess.jsp</result>
+			<result name="update">/news/updateSuccess.jsp</result>
+		</action>
+		
+		<action name="updateNews" class="com.zdc.action.IndexAction" method="update">
+			<result name="update">/news/updateSuccess.jsp</result>
+		</action>
+	</package>
+
+
+</struts>

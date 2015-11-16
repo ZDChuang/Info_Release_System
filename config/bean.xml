@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.zdc" />
+	
+	<!-- 获取配置文件 -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:jdbc.properties</value>
+		</property>
+	</bean>
+
+
+<!--  配置一个数据源 datasource
+    Spring在第三方依赖包中包含了两个数据源的实现类包，其一是Apache的DBCP，其二是 C3P0。
+        可以在Spring配置文件中利用这两者中任何一个配置数据源。 DBCP是一个依赖 Jakarta commons-pool对象池机制的数据库连接池，
+        所以在类路径下还必须包括<spring_home></spring_home>/lib/jakarta- commons/commons-pool.jar。
+        下面是使用DBCP配置MySql数据源的配置片断。
+-->
+	<bean id="dataSource" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+
+		<property name="dataSource" ref="dataSource" />
+		 
+		 <!--  spring自动扫描注解方式配置的hibernate类文件。如果不使用注解，那么可以不配置。-->
+		 <property name="packagesToScan">
+			<list>
+				<value>com.zdc.model</value>
+			</list>
+		</property>
+		
+		<!--   mappingResources是将实体类映射到数据库中，本例中是将User.hbm.xml文件配置和数据库表相对应   -->
+		<property name="mappingResources">
+			<list>
+				<value>com/zdc/model/User.hbm.xml</value>
+				<value>com/zdc/model/News.hbm.xml</value>
+				<value>com/zdc/model/NewsType.hbm.xml</value>
+				<value>com/zdc/model/Administrator.hbm.xml</value>
+				<!-- <value>com/zdc/model/UserAuthority.hbm.xml</value> -->
+			</list>
+		</property>
+		
+		<!--   hibernate属性配置       -->
+		<property name="hibernateProperties">
+			<value>
+				hibernate.hbm2ddl.auto=update
+				hibernate.dialect=org.hibernate.dialect.MySQLDialect
+				hibernate.show_sql=true
+				hibernate.format_sql=true
+			</value>
+		</property>
+	</bean>
+
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory">
+		</property>
+	</bean>
+	
+	
+<!-- 配置Hibernate的局部事务管理器，使用HibernateTransactionManager类 -->
+<!-- 该类是PlatformTransactionManager接口对采用Hibernate的特定实现类 -->
+	<bean id="txManager"
+	    	class="org.springframework.orm.hibernate5.HibernateTransactionManager"> 
+	        <property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<aop:config>
+		<aop:pointcut id="bussinessService"
+			expression="execution(public * com.zdc.service.*.*(..))" />
+		<aop:advisor pointcut-ref="bussinessService"
+			advice-ref="txAdvice" />
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="exists" read-only="true" />
+			<tx:method name="add*" propagation="REQUIRED"/>
+			<tx:method name="delete" propagation="REQUIRED"/>
+			<tx:method name="change" propagation="REQUIRED"/>
+			<tx:method name="create" propagation="REQUIRED"/>
+			<tx:method name="saveNews" propagation="REQUIRED"/>
+			<tx:method name="deleteNews" propagation="REQUIRED"/>
+			<tx:method name="updateNews" propagation="REQUIRED"/>
+			<tx:method name="list" propagation="REQUIRED"/>
+			
+		</tx:attributes>
+	</tx:advice> 
+	
+</beans>
